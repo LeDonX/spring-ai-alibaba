@@ -26,6 +26,9 @@
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
+            <!--spring-ai-bom能管理Spring AI的版本
+            但spring-ai-alibaba-bom:1.1.2.2没有管理spring-ai-alibaba-starter-dashscope
+            所以这个starter必须手动写版本号-->
             <version>1.1.2.2</version>
         </dependency>
         <dependency>
