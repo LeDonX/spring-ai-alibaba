@@ -4,8 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.content.Media;
 import org.springframework.ai.ollama.OllamaChatModel;
-import org.springframework.ai.ollama.api.OllamaOptions;
+import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -20,7 +21,7 @@ import reactor.core.publisher.Flux;
 public class TestOllama {
     @Test
     public void testOllama(@Autowired OllamaChatModel ollamaChatModel){
-
+//        OllamaChatOptions
 //        String call = ollamaChatModel.call("你好，你是谁？/no_think");
 //        System.out.println(call);
         Flux<String> stream = ollamaChatModel.stream("你好，你是谁？");
@@ -29,23 +30,23 @@ public class TestOllama {
 
     @Test
     public void testMultimodality(@Autowired OllamaChatModel ollamaChatModel) {
-        var imageResource = new ClassPathResource("gradle.png");
+        var imageResource = new ClassPathResource("files/1.png");
 
-        OllamaOptions ollamaOptions = OllamaOptions.builder()
-                .model("gemma3")
+        OllamaChatOptions ollamaOptions = OllamaChatOptions.builder()
+                .model("deepseek-r1:14b")
                 .build();
 
-//        Media media = new Media(MimeTypeUtils.IMAGE_PNG, imageResource);
-//
-//
-//        ChatResponse response = ollamaChatModel.call(
-//                new Prompt(
-//                        UserMessage.builder().media(media)
-//                                .text("识别图片").build(),
-//                        ollamaOptions
-//                )
-//        );
+        Media media = new Media(MimeTypeUtils.IMAGE_PNG, imageResource);
 
-//        System.out.println(response.getResult().getOutput().getText());
+
+        ChatResponse response = ollamaChatModel.call(
+                new Prompt(
+                        UserMessage.builder().media(media)
+                                .text("识别图片").build(),
+                        ollamaOptions
+                )
+        );
+
+        System.out.println(response.getResult().getOutput().getText());
     }
 }
