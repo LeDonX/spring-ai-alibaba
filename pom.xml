@@ -17,6 +17,8 @@
 
     <modules>
         <module>quick-start</module>
+        <module>chat-client</module>
+        <module>multi-platform-and-model</module>
     </modules>
 
     <properties>

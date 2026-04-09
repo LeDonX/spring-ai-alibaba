@@ -33,7 +33,7 @@ public class TestOllama {
         var imageResource = new ClassPathResource("files/1.png");
 
         OllamaChatOptions ollamaOptions = OllamaChatOptions.builder()
-                .model("deepseek-r1:14b")
+                .model("gemma4:e4b")
                 .build();
 
         Media media = new Media(MimeTypeUtils.IMAGE_PNG, imageResource);
