@@ -19,6 +19,7 @@
         <module>quick-start</module>
         <module>chat-client</module>
         <module>multi-platform-and-model</module>
+        <module>multi-model-structured-agent</module>
     </modules>
 
     <properties>

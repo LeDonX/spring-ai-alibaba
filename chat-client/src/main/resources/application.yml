@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    username: root
+    password: password
+    url: jdbc:mysql://localhost:3306/springai?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  ai:
+    memory:
+      redis:
+        host: localhost
+        port: 6379
+        timeout: 5000
+        password:

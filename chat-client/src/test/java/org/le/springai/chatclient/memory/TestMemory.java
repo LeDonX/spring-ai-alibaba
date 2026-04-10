@@ -1,5 +1,6 @@
-package org.le.springai.chatclient;
+package org.le.springai.chatclient.memory;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
@@ -67,16 +68,23 @@ public class TestMemory {
         System.out.println(response2.getResult().getOutput().getText());
     }
 
-    @Test
-    public void testMemoryAdvisor(
-            @Autowired ChatClient.Builder builder,
-            @Autowired ChatMemory chatMemory) {
-        ChatClient chatClient = builder.defaultAdvisors(
-                PromptChatMemoryAdvisor.builder(chatMemory).build()
-        ).build();
+    ChatClient chatClient;
+    
+    @BeforeEach
+    public void init(@Autowired ChatClient.Builder builder,
+                     @Autowired ChatMemory chatMemory) {
+        chatClient = builder
+                .defaultAdvisors(
+                        PromptChatMemoryAdvisor.builder(chatMemory).build()
+                )
+                .build();
+    }
 
+
+    @Test
+    public void testMemoryAdvisor(@Autowired ChatMemory chatMemory) {
         String content = chatClient.prompt()
-                .user("我叫徐庶" )
+                .user("我叫LeDon" )
                 .call()
                 .content();
         System.out.println(content);
@@ -98,5 +106,33 @@ public class TestMemory {
                     .maxMessages(10)
                     .chatMemoryRepository(chatMemoryRepository).build();
         }
+    }
+
+    @Test
+    public void testChatOptions() {
+        String content = chatClient.prompt()
+                .user("我叫LeDon")
+                .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,"1"))
+                .call()
+                .content();
+        System.out.println(content);
+        System.out.println("--------------------------------------------------------------------------");
+
+        content = chatClient.prompt()
+                .user("我叫什么 ？")
+                .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,"1"))
+                .call()
+                .content();
+        System.out.println(content);
+
+
+        System.out.println("--------------------------------------------------------------------------");
+
+        content = chatClient.prompt()
+                .user("我叫什么 ？")
+                .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,"2"))
+                .call()
+                .content();
+        System.out.println(content);
     }
 }
