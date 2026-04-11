@@ -2,7 +2,6 @@ package org.ledon.springai.quickstart;
 
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
 import org.junit.jupiter.api.Test;
-import org.springframework.ai.deepseek.DeepSeekChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
