@@ -6,19 +6,53 @@ server:
       enabled: true
       force: true
 
+spring:
+  ai:
+    mcp:
+      client:
+        enabled: true
+#        name: flight-booking
+#        version: 1.0.0
+#        type: ASYNC
+        request-timeout: 60s
+#        streamable-http:
+#          connections:
+#            baidu-map:
+#              url: https://mcp.map.baidu.com
+#              endpoint: /mcp?ak=${bd_map}
+        stdio:
+        #           1. 单独放在一个json文件（推荐）
+          servers-configuration: classpath:/mcp/mcp-servers-config.json
+        sse:
+          connections:
+            UserSSEInfo:
+              url: http://localhost:8082
+        ##         2. 直接配置全局配置文件中
+        #          connections:
+        #            baidu-map:
+        #              command: cmd
+        #              args:
+        #                - /c
+        #                - npx
+        #                - -y
+        #                - @baidumap/mcp-server-baidu-map
+        #              env:
+        #                BAIDU_MAP_API_KEY:
+
+
 #spring:
 #  ai:
 #    mcp:
 #      client:
 #        request-timeout: 60000
 #        stdio:
-          # 1. 单独放在一个json文件（推荐）
-#          servers-configuration: classpath:/mcp/mcp-servers-config.json
+##           1. 单独放在一个json文件（推荐）
+#          servers-configuration: classpath:/mcp/mcp-servers-config-bak.json
 #        sse:
 #          connections:
 #            UserSSEInfo:
 #              url: http://localhost:8088
-        # 2. 直接配置全局配置文件中
+##         2. 直接配置全局配置文件中
 #          connections:
 #            baidu-map:
 #              command: cmd
@@ -28,7 +62,7 @@ server:
 #                - -y
 #                - @baidumap/mcp-server-baidu-map
 #              env:
-#                BAIDU_MAP_API_KEY: LEyBQxG9UzR9C1GZ6zDHsFDVKvBem2do
+#                BAIDU_MAP_API_KEY:
 
 # 调试日志
 logging:

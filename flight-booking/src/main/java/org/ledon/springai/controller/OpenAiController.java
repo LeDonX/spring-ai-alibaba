@@ -34,7 +34,8 @@ public class OpenAiController {
 
     public OpenAiController(ChatClient.Builder chatClientBuilder,
                             ChatMemory chatMemory,
-                            ToolsService toolsService) {
+                            ToolsService toolsService,
+                            ToolCallbackProvider toolCallbackProvider) {
         this.chatClient = chatClientBuilder
                 .defaultSystem("""
 						##角色
@@ -49,6 +50,7 @@ public class OpenAiController {
                 .defaultAdvisors(PromptChatMemoryAdvisor.builder(chatMemory).build(),
                         new SimpleLoggerAdvisor())
                 .defaultTools(toolsService)
+                .defaultToolCallbacks(toolCallbackProvider)
                 .build();
         this.chatMemory = chatMemory;
     }

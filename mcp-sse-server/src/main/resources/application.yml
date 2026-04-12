@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: mcp-sse-server
+  ai:
+    mcp:
+      server:
+        name: my-weather-server
+        version: 0.0.1
+server:
+  port: 8082

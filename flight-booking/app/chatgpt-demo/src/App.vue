@@ -47,7 +47,7 @@
             class="booking-card"
           >
             <div class="booking-card__header">
-              <div>
+              <div class="booking-card__header-main">
                 <p class="booking-card__label">预订号</p>
                 <h3 class="booking-card__title">{{ item.bookingNumber || '未生成' }}</h3>
                 <p class="booking-card__meta">{{ item.name || '未填写乘机人' }}</p>
@@ -119,6 +119,7 @@
                 </div>
               </el-timeline-item>
             </el-timeline>
+            <div ref="chatBottomRef" aria-hidden="true" style="height: 1px;" />
           </div>
 
           <div class="chat-composer">
@@ -127,12 +128,19 @@
                 v-model="msg"
                 class="chat-input"
                 type="textarea"
-                :autosize="{ minRows: 4, maxRows: 8 }"
+                :autosize="{ minRows: 3, maxRows: 6 }"
                 placeholder="请输入您的出行需求或预订问题"
                 @keydown.enter.prevent="sendMsg()"
               />
 
-              <el-button class="send-button" type="primary" @click="sendMsg()">发送</el-button>
+              <el-button
+                class="send-button"
+                type="primary"
+                :icon="Top"
+                aria-label="发送消息"
+                title="发送消息"
+                @click="sendMsg()"
+              />
             </div>
           </div>
         </div>
@@ -141,8 +149,8 @@
   </div>
 </template>
 <script lang="ts">
-import { MoreFilled } from '@element-plus/icons-vue'
-import {ref, onMounted} from "vue";
+import { MoreFilled, Top } from '@element-plus/icons-vue'
+import { nextTick, onMounted, ref } from 'vue'
 import axios from 'axios'//引入axios
 
 export default {
@@ -156,8 +164,17 @@ export default {
     ]);
     const msg = ref('');
     const tableData = ref([]);
+    const chatBottomRef = ref<HTMLElement | null>(null);
     let count = 2;
     let eventSource: EventSource | null;
+
+    const scrollChatToBottom = async () => {
+      await nextTick();
+
+      requestAnimationFrame(() => {
+        chatBottomRef.value?.scrollIntoView({ block: 'end' });
+      });
+    };
 
     const formatBookingStatus = (status) => {
       if (status === 'CONFIRMED') {
@@ -229,15 +246,18 @@ export default {
             color: '#0bbd87',
           },
       );
+      void scrollChatToBottom();
 
       // sse: 服务端推送 Server-Sent Events
       eventSource = new EventSource(`http://localhost:8080/ai/generateStreamAsString?message=${msg.value}`);
       msg.value='';
       eventSource.onmessage = (event) => {
         activities.value[count].content += event.data;
+        void scrollChatToBottom();
       };
       eventSource.onopen = (event) => {
         activities.value[count].content = '';
+        void scrollChatToBottom();
       };
       eventSource.onerror = function (e) {
         count = count + 2;
@@ -265,10 +285,12 @@ export default {
       activities,
       msg,
       tableData,
+      chatBottomRef,
       formatBookingStatus,
       getStatusTagType,
       formatBookingClass,
       sendMsg,
+      Top,
     };
   },
 };

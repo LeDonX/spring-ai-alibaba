@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: mcp-stdio-server
+  main:
+    web-application-type: none
+    banner-mode: off
+  ai:
+    mcp:
+      server:
+        name: my-weather-server
+        version: 0.0.1
