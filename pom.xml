@@ -18,6 +18,7 @@
         <module>mcp-stdio-server</module>
         <module>mcp-sse-server</module>
         <module>rag</module>
+        <module>observability-actuator</module>
     </modules>
 
     <properties>

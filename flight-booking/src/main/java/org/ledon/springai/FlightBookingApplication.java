@@ -22,7 +22,7 @@ public class FlightBookingApplication {
         SpringApplication.run(FlightBookingApplication.class, args);
     }
 
-    /*@Bean
+    @Bean
     CommandLineRunner commandLineRunner(@Autowired VectorStore vectorStore,
                                         @Value("classpath:rag/terms-of-service.txt") Resource termsOfServiceDocs) {
         return args -> {
@@ -30,9 +30,9 @@ public class FlightBookingApplication {
                     new TokenTextSplitter().transform(          // 2.转换
                             new TextReader(termsOfServiceDocs).read())  // 1.读取
             );
-
+            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++");
             List<Document> documents = vectorStore.similaritySearch("退票的费用");
             System.out.println(documents);
         };
-    }*/
+    }
 }

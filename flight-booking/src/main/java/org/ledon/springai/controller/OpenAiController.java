@@ -11,6 +11,7 @@ import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,12 +31,13 @@ public class OpenAiController {
 
     private final ChatMemory chatMemory;
     ChatClient chatClient;
-//    VectorStore vectorStore;
+    VectorStore vectorStore;
 
     public OpenAiController(ChatClient.Builder chatClientBuilder,
                             ChatMemory chatMemory,
                             ToolsService toolsService,
-                            ToolCallbackProvider toolCallbackProvider) {
+                            ToolCallbackProvider toolCallbackProvider,
+                            VectorStore vectorStore) {
         this.chatClient = chatClientBuilder
                 .defaultSystem("""
 						##角色
@@ -53,18 +55,37 @@ public class OpenAiController {
                 .defaultToolCallbacks(toolCallbackProvider)
                 .build();
         this.chatMemory = chatMemory;
+        this.vectorStore=vectorStore;
     }
 
     @CrossOrigin
     @GetMapping(value = "/ai/generateStreamAsString", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> generateStreamAsString(
+    public Flux<ServerSentEvent<String>> generateStreamAsString(
             @RequestParam(value = "message", defaultValue = "讲个笑话") String message) {
 
-        return chatClient.prompt()
+        Flux<ServerSentEvent<String>> contentStream = chatClient.prompt()
                 .user(message)
-                .system(p -> p.param("current_date",LocalDate.now()))
+                .system(p -> p.param("current_date", LocalDate.now()))
+                .advisors(
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(
+                                        SearchRequest.builder()
+                                                .topK(5)
+                                                .similarityThreshold(0.4)
+                                                .build())
+                                .build()
+                )
                 .stream()
-                .content();
+                .content().map(chunk -> ServerSentEvent.<String>builder()
+                        .data(chunk)
+                        .build());
+        Flux<ServerSentEvent<String>> doneStream = Flux.just(
+                ServerSentEvent.<String>builder()
+                        .event("done")
+                        .data("[DONE]")
+                        .build()
+        );
+        return contentStream.concatWith(doneStream);
     }
 
     /*public OpenAiController(ChatClient.Builder chatClientBuilder,

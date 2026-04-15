@@ -259,10 +259,19 @@ export default {
         activities.value[count].content = '';
         void scrollChatToBottom();
       };
-      eventSource.onerror = function (e) {
+      /*eventSource.onerror = function (e) {
         count = count + 2;
         eventSource.close();
         getBookings();  // 每次对话完后刷新列表
+      };*/
+      eventSource.addEventListener('done', () => {
+        count = count + 2;
+        eventSource?.close();
+        getBookings(); // 明确在“流完成”后刷新
+      });
+      eventSource.onerror = (e) => {
+        console.error('chat stream error', e);
+        eventSource?.close();
       };
     };
 

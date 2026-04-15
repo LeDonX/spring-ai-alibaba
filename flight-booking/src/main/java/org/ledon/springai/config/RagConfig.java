@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RagConfig {
 
-    /*@Bean
+    @Bean
     public VectorStore vectorStore(OllamaEmbeddingModel embeddingModel) {
         return SimpleVectorStore.builder(embeddingModel).build();
-    }*/
+    }
 }
