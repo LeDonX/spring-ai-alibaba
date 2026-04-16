@@ -19,6 +19,7 @@
         <module>mcp-sse-server</module>
         <module>rag</module>
         <module>observability-actuator</module>
+        <module>spring-ai-agent</module>
     </modules>
 
     <properties>
